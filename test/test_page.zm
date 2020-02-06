@@ -85,6 +85,11 @@ Page test_page
         // Sound source/producer object.
         SoundFile clip {}
 
+        on_event:finish()
+        {
+            done(CONTINUE);
+        }
+
         time play(time t)
         {
             abort();

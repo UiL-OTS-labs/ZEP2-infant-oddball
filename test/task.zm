@@ -87,7 +87,7 @@ Block task
             pause_page.set_text(PRAC_INSTRUCTION, true);
 
             pause_page.action(this);
-            control.enable_all_buttons(1);
+            control.enable_all_buttons(CONTINUE);
         }
     }
 
