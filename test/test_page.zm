@@ -42,7 +42,7 @@ Page test_page
     message()
     {
         // Process response box message. See setup() below.
-        response.process_hit(message_arg, event_time);
+        //response.process_hit(message_arg, event_time);
     }
 
     VerticalLayout layout {
@@ -98,38 +98,6 @@ Page test_page
         }
     }
 
-    Response response
-    {
-        int value = -1;
-        int correctness = 0;
-
-        finish()
-        {
-            if (item.type == COMMON)
-                correctness = value == -1;
-            else
-                correctness = value != -1;
-            test_page_overlay.start_feedback(this, correctness, FEEDBACK_DUR);
-            
-            done(CONTINUE);
-        }
-
-        void clear ()
-        {
-            value = -1;
-            correctness = 0;
-        }
-
-        void process_hit(int val, time t)
-        {
-            HitType h = hit(t);
-            if (h == HIT_VALID)
-                value = val;
-            ignore_remaining_hits();
-        }
-    }
-
-
     // Aborts any ongoing activity on this page and signals the initiator
     // of the trial that we're done.
     void done(int msgid)
@@ -164,9 +132,6 @@ Page test_page
 
 
         // Enable response box buttons and fallback keyboard keys.
-        control.target = this;
-        control.enable_all_buttons(1);
-        control.enable_key(' ', 1);
     }
 
 
@@ -177,7 +142,7 @@ Page test_page
 
         control.disable_buttons();
         control.disable_keys();
-        control.target = null;
+//        control.target = null;
     }
 
 
@@ -196,13 +161,6 @@ Page test_page
         time stimonset = stimulus.play(tref);
 
         parport.send_pulse(item.marker, stimonset);
-
-
-        // Response interval starts at stimulus onset. Timeout after
-        // RESPONSE_DURATION unless this duration is 0s or less.
-        response.clear();
-        response.start(stimonset, RESPONSE_DURATION);
-
 
         // Update progress counter (if enabled).
         test_page_overlay.update_progress_bar(count);

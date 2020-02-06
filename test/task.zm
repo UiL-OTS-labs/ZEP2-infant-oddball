@@ -38,6 +38,47 @@ import instructions;
 
 Block task
 {
+    Response resp
+    {
+        on_event:message()
+        {
+            process_hit(message_arg, event_time);
+        }
+
+        void process_hit(int val, time t)
+        {
+            HitType h = hit(t);
+            if (h == HIT_VALID) {
+                set_sleep_state(cast<SleepState>(val));
+                if (val == AWAKE) {
+                    control.set_sleeping(false);
+                }
+                else {
+                    control.set_sleeping(true);
+                }
+            }
+        }
+    }
+
+    void setup()
+    {
+        control.target = resp;
+        control.disable_buttons();
+        control.enable_button(0, SLEEPING);
+        control.enable_button(2, AWAKE);
+        control.disable_keys();
+        control.enable_key(KEY_Shift_L, SLEEPING);
+        control.enable_key(KEY_Shift_R, AWAKE);
+        resp.start(now(), 0ms);
+    }
+
+    cleanup()
+    {
+        control.target = null;
+        control.disable_buttons();
+        control.disable_keys();
+    }
+
     Part instructions
     {
         on_event:entry()
@@ -62,6 +103,8 @@ Block task
             num_cycles = prac_items.size;
             // Prepare test page: progress bar, feedback and prompt enabled.
             test_page.setup(num_cycles, false, false);
+
+            task.setup();
         }
 
         on_event:exit()
@@ -136,6 +179,8 @@ Block task
             num_cycles = test_items.size;
             // Prepare test page: progress bar, feedback and prompt enabled.
             test_page.setup(-1, false, false);
+
+            task.setup();
         }
 
 
